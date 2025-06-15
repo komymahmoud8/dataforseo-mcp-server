@@ -24,17 +24,39 @@ export class DataForSEOClient {
       'User-Agent': `DataForSEO-MCP-TypeScript-SDK/${version}`
     };
 
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    // Create AbortController for timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, defaultGlobalToolConfig.httpTimeout);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal,
+      });
+
+      // Clear timeout on successful response
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error: unknown) {
+      // Clear timeout on error
+      clearTimeout(timeoutId);
+      
+      // Handle timeout errors specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error(`Request timeout after ${defaultGlobalToolConfig.httpTimeout}ms. This may happen with resource-intensive operations like on_page_instant_pages.`);
+      }
+      
+      throw error;
     }
-
-    return response.json();
   }
 } 
 
