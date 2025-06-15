@@ -1,0 +1,55 @@
+{
+  "name": "dataforseo-mcp-server",
+  "version": "2.2.6",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "dataforseo-mcp-server": "./build/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/cli.js', '755')\"",
+    "start": "node build/index.js",
+    "dev": "tsc --watch",
+    "prepare": "npm run build",
+    "http": "node build/index-http.js",
+    "sse": "node build/index-sse-http.js",
+    "railway:build": "npm run build",
+    "railway:start": "npm run http",
+    "test:deployment": "node test-deployment.js"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "dataforseo",
+    "mcp",
+    "modelcontextprotocol",
+    "api",
+    "server",
+    "seo",
+    "sse",
+    "streaming"
+  ],
+  "author": "dataforseo",
+  "license": "Apache-2.0",
+  "description": "A Model Context Protocol (MCP) server for the DataForSEO API, enabling modular and extensible integration of DataForSEO endpoints with support for both HTTP and SSE transports.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/mcp-server-typescript.git"
+  },
+  "homepage": "https://github.com/your-username/mcp-server-typescript#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.4.0",
+    "build": "^0.1.4",
+    "dotenv": "^16.5.0",
+    "express": "^4.18.2"
+  }
+}
